@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
+    <link rel="icon" href="assets/img/favicon.png">
+    <title>
+        Material Dashboard by Creative Tim
+    </title>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/material-dashboard.css?v=2.0.0">
+    <!-- Documentation extras -->
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="assets/assets-for-demo/demo.css" rel="stylesheet" />
+    <!-- iframe removal -->
+</head>
+
+<body class="">
+    <div class="wrapper">
+        <div class="sidebar" data-color="purple" data-background-color="white" data-image="./assets/img/sidebar-1.jpg">
+            <!--
+        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+        Tip 2: you can also add an image using data-image tag
+    -->
+            <div class="logo">
+                <a href="http://www.creative-tim.com" class="simple-text logo-normal">
+                    Food App
+                </a>
+            </div>
+            <div class="sidebar-wrapper">
+                <ul class="nav">
+
+                    <li class="nav-item ">
+                        <a class="nav-link" href="index.html">
+                            <i class="material-icons">content_paste</i>
+                            <p>Driver View</p>
+                        </a>
+                    </li>
+                    <li class="nav-item  active">
+                        <a class="nav-link" href="user.html">
+                            <i class="material-icons">person</i>
+                            <p>Place Order</p>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-transparent  navbar-absolute fixed-top">
+                <div class="container-fluid">
+                    <div class="navbar-wrapper">
+                        <a class="navbar-brand" href="#pablo">Order</a>
+                    </div>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end" id="navigation">
+                        <form class="navbar-form">
+                            <div class="input-group no-border">
+                                <input type="text" value="" class="form-control" placeholder="Search...">
+                                <button type="submit" class="btn btn-white btn-round btn-just-icon">
+                                    <i class="material-icons">search</i>
+                                    <div class="ripple-container"></div>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+
+            <div class="content" style="margin-top: 40px">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="card">
+
+
+                                <div class="card-header card-header-primary">
+                                    <h4 class="card-title">Order Food</h4>
+                                    <p class="card-category">Complete the order</p>
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating">Order Id</label>
+                                                <select class="form-control" id="orderId">
+                                                    <option value="testId1" selected>Nugegoda Restaurant</option>
+                                                    <option value="testId2">Mount Lavinia Restaurant</option>
+                                                    <option value="testId3">Moratuwa Restaurant</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating" style="position: unset;">Restaurant Address</label>
+                                                <input type="text" class="form-control" id="foodStoreLatitudeAndLongitude" style="background-color: white;" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating" style="position: unset;">Distance (Mi.)</label>
+                                                <input type="text" class="form-control" id="distance" style="background-color: white;" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating" style="position: unset;">Base Price (Rs.)</label>
+                                                <input type="text" class="form-control" id="basePrice" style="background-color: white;" readonly>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating" style="position: unset;">User Address</label>
+                                                <input type="text" class="form-control" id="UserAddressLatitudeAndLongitude" style="background-color: white;" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="bmd-label-floating" style="position: unset;">Duration</label>
+                                                <input type="text" class="form-control" id="duration" style="background-color: white;" readonly>
+                                            </div>
+                                        </div>
+
+                                        </div>
+
+                                    <button onclick="functions.orderSubmit()" class="btn btn-primary pull-right">Order Food</button>
+                                    <button onclick="functions.showDrivers()" class="btn btn-primary pull-right">Check Available Drivers</button>
+                                    <div class="clearfix"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8" style="height: 400px;">
+                            <div id="map-canvas" style="height: 95%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="footer ">
+                <div class="container-fluid">
+                    <nav class="pull-left">
+                    </nav>
+                    <div class="copyright pull-right">
+                        &copy;
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script>, made with love by
+                        <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web.
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</body>
+<!--   Core JS Files   -->
+<script src="assets/js/core/jquery.min.js"></script>
+<script src="assets/js/core/popper.min.js"></script>
+<script src="assets/js/bootstrap-material-design.js"></script>
+<script src="assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Charts Plugin, full documentation here: https://gionkunz.github.io/chartist-js/ -->
+<script src="assets/js/plugins/chartist.min.js"></script>
+<!-- Library for adding dinamically elements -->
+<script src="assets/js/plugins/arrive.min.js" type="text/javascript"></script>
+<!--  Notifications Plugin, full documentation here: http://bootstrap-notify.remabledesigns.com/    -->
+<script src="assets/js/plugins/bootstrap-notify.js"></script>
+<!-- Material Dashboard Core initialisations of plugins and Bootstrap Material Design Library -->
+<script src="assets/js/material-dashboard.js?v=2.0.0"></script>
+
+<!--<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>-->
+
+<!-- demo init -->
+<script src="assets/js/plugins/demo.js"></script>
+
+
+<!-- Order page controller init -->
+<script src="assets/js/order.js"></script>
+
+
+</html>

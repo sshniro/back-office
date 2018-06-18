@@ -1,0 +1,159 @@
+{
+  "users": [
+    {
+      "username": "driver01-malwatta-rd",
+      "password": "1qaz2wsx@",
+      "role": [
+        "Driver",
+        "Customer"
+      ],
+      "first_name": "driver01",
+      "last_name": "malwatta-rd",
+      "address": "Malwatta Road, Colombo, Sri Lanka",
+      "nic": "836857735V",
+      "mobile_number": "+94773629557",
+      "license_number": "LN",
+      "total_rating": 0,
+      "total_raters": 0,
+      "card_info": "4111 1111 1111 1111"
+    },
+    {
+      "username": "driver02-hill-street",
+      "password": "1qaz2wsx@",
+      "role": [
+        "Driver",
+        "Customer"
+      ],
+      "first_name": "driver02",
+      "last_name": "hill-street",
+      "address": "39 Dehiwala Rd, Dehiwala-Mount Lavinia, Sri Lanka",
+      "nic": "836857735V",
+      "mobile_number": "+94773629557",
+      "license_number": "LN",
+      "total_rating": 0,
+      "total_raters": 0,
+      "card_info": "4111 1111 1111 1111"
+    },
+    {
+      "username": "driver03-dehiwala-station",
+      "password": "1qaz2wsx@",
+      "role": [
+        "Driver",
+        "Customer"
+      ],
+      "first_name": "driver03",
+      "last_name": "dehiwala-station",
+      "address": "46 Station Road, Dehiwala-Mount Lavinia, Sri Lanka",
+      "nic": "836857735V",
+      "mobile_number": "+94773629557",
+      "license_number": "LN",
+      "total_rating": 0,
+      "total_raters": 0,
+      "card_info": "4111 1111 1111 1111"
+    },
+
+
+
+
+
+    {
+      "username": "driver04-dharmarama-rd",
+      "password": "1qaz2wsx@",
+      "location_address": "10 Sri Dharmarama Rd, Dehiwala-Mount Lavinia, Sri Lanka",
+      "location_latitude": "6.849377",
+      "location_longitude": "79.873545",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 3.7
+    },
+    {
+      "username": "driver05-galvahara-rd",
+      "password": "1qaz2wsx@",
+      "location_address": "283 Galvihara Rd, Dehiwala-Mount Lavinia, Sri Lanka",
+      "location_latitude": "6.850304",
+      "location_longitude": "79.875723",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 2.6
+    },
+    {
+      "username": "driver06-b11-rd",
+      "password": "1qaz2wsx@",
+      "location_address": "219 B11, Dehiwala-Mount Lavinia, Sri Lanka",
+      "location_latitude": "6.851155",
+      "location_longitude": "79.872016",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 1.9
+    },
+    {
+      "username": "driver07-hena-rd",
+      "password": "1qaz2wsx@",
+      "location_address": "2 Hena Rd, Dehiwala-Mount Lavinia, Sri Lanka",
+      "location_latitude": "6.827976",
+      "location_longitude": "79.869536",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 1.3
+    },
+    {
+      "username": "driver08-fifth-lane",
+      "password": "1qaz2wsx@",
+      "location_address": "15 5th Lane, Dehiwala-Mount Lavinia, Sri Lanka",
+      "location_latitude": "6.816769",
+      "location_longitude": "79.878820",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 0.4
+    },
+    {
+      "username": "driver09-bekariya-junction",
+      "password": "1qaz2wsx@",
+      "location_address": "89 B389, Dehiwala-Mount Lavinia, Sri Lanka",
+      "location_latitude": "6.826914",
+      "location_longitude": "79.884904",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 4.6
+    },
+    {
+      "username": "driver10-kadawatha-rd",
+      "password": "1qaz2wsx@",
+      "location_address": "109 Kadawatha Rd, Colombo, Sri Lanka",
+      "location_latitude": "6.856924",
+      "location_longitude": "79.878723",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 3.7
+    },
+    {
+      "username": "driver11-lawrence-rd",
+      "password": "1qaz2wsx@",
+      "location_address": "49 St Lawrence Rd, Colombo 00600, Sri Lanka",
+      "location_latitude": "6.873073",
+      "location_longitude": "79.864404",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 4.1
+    },
+    {
+      "username": "driver12-jayasinghe-mawatha",
+      "password": "1qaz2wsx@",
+      "location_address": "88B S De S. Jayasinghe Mawatha, Nugegoda, Sri Lanka",
+      "location_latitude": "6.866655",
+      "location_longitude": "79.884382",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 3.9
+    },
+    {
+      "username": "driver13-colombo-seven",
+      "password": "1qaz2wsx@",
+      "location_address": "Eye Donation Ave, Colombo 00700, Sri Lanka",
+      "location_latitude": "6.906790",
+      "location_longitude": "79.869705",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 2.6
+    },
+    {
+      "username": "driver14-reid-ave",
+      "password": "1qaz2wsx@",
+      "location_address": "35 Reid Ave, Colombo 00700, Sri Lanka",
+      "location_latitude": "6.902645",
+      "location_longitude": "79.862495",
+      "driver_availability": "DRIVER_AVAILABLE",
+      "driver_rating": 4.1
+    }
+  ]
+}

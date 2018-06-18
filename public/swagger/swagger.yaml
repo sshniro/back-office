@@ -1,0 +1,69 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Hello World App
+# during dev, should point to your local machine
+host: localhost:8080
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  #- https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+tags:
+  - name: users
+    description: Everything about users
+paths:
+  /users:
+    # binds a127 app logic to a route
+    get:
+      description: Returns user by ID
+      # used as the method name of the controller
+      operationId: hello
+      tags:
+        - users
+      parameters:
+        - name: x-access-token
+          in: header
+          description: an authorization header
+          required: true
+          type: string
+        - name: userId
+          in: query
+          description: User Id 
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/SuccessResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  SuccessResponse:
+    properties:
+      status:
+        type: string
+      message:
+        type: string
+  ErrorResponse:
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
