@@ -53,6 +53,7 @@ function notifyAvailableVehicles(orderInfo, userInfo){
             return orderQueryBuilder.insertOrder(completeOrderInfo, userInfo);
 
         }).then(function (response) {
+            if (!response) return;
 
             sortAvailableVehiclesByDriverRating(response.data);
             return resolve({status: 'Ok', data: 'Successfully notified the drivers'});
@@ -183,7 +184,7 @@ function notifyDriversByDistance(orderInfo) {
 
                 }
             }else{
-                console.log('Oder Not Found');
+                console.log('Order Not Found');
             }
 
         }).catch(function (err) {

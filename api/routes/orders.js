@@ -5,7 +5,7 @@ const router = express.Router();
 
 const authenticationProvider = require('../providers/authenticationProvider.js');
 const orderQueryBuilder = require('../providers/orderQueryBuilder.js');
-const orderHelperProvider = require('../helpers/orderHelperProvider.js');
+const orderHelperProvider = require('../helpers/orderHelper.js');
 
 router.get('/available/vehicles', authenticationProvider.permit('Customer'), function(req, res, next){
 
@@ -67,7 +67,7 @@ router.put('/complete', authenticationProvider.permit('Driver'), function(req, r
 
 });
 
-router.put('/feedback', authenticationProvider.permit('Customer'), function(req, res, next){
+router.post('/feedback', authenticationProvider.permit('Customer'), function(req, res, next){
 
     // Update Order Feedback & Driver Rating
 
@@ -75,13 +75,11 @@ router.put('/feedback', authenticationProvider.permit('Customer'), function(req,
 
     console.log(feedbackInfo);
 
-    return res.status(200).send('Need to be implemented');
-
-    // orderQueryBuilder.addFeedback(user.user_id, feedbackInfo).then(function (response) {
-    //     return res.status(200).json(response);
-    // }).catch(function (err) {
-    //     return res.status(500).json(err);
-    // });
+    orderQueryBuilder.addFeedback(user.user_id, feedbackInfo).then(function (response) {
+        return res.status(200).json(response);
+    }).catch(function (err) {
+        return res.status(500).json(err);
+    });
 
 });
 

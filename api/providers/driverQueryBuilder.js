@@ -10,7 +10,8 @@ module.exports = {
     getDriversBYIDs: getDriversBYIDs,
     getDriver: getDriver,
     selectVehicle: selectVehicle,
-    updateCurrentLocation: updateCurrentLocation
+    updateCurrentLocation: updateCurrentLocation,
+    updateRating: updateRating
 };
 
 function insertDriver(driverInfo, userInfo){
@@ -41,14 +42,14 @@ function getDriver(user_id){
     return new Promise(function (resolve, reject) {
 
         let driverSelectQuery = 'SELECT driver_id, CASE WHEN total_rating > 0 AND total_raters > 0 THEN (total_rating / total_raters) ELSE 0 END AS rating, ' +
-            'license_number, current_vehicle FROM drivers WHERE driver_id = ' + user_id + ';';
+            'total_raters, license_number, current_vehicle FROM drivers WHERE driver_id = ' + user_id + ';';
 
         postgreSQLService.queryExecutor(driverSelectQuery).then(function (driverSelectQueryResponse) {
 
             if(driverSelectQueryResponse.rowCount > 0){
                 return resolve({status: 'Ok', data: driverSelectQueryResponse.rows[0]});
             }else{
-                return reject({status: 'Failed', message: 'Failed to insert user'});
+                return reject({status: 'Failed', message: 'Failed to get driver info'});
             }
         }).catch(function (err) {
             console.log(err);
@@ -137,6 +138,7 @@ function selectVehicle(driver_id, vehicle_id){
             else return reject({status: 'Failed', message: 'Vehicle doen\'t belong to the driver'});
 
         }).then(function (driverUpdateQueryResponse) {
+            if (!driverUpdateQueryResponse) return;
 
             if(driverUpdateQueryResponse.rowCount > 0){
 
@@ -192,6 +194,43 @@ function updateCurrentLocation(driver_id, vehicleLocationInfo){
 
             }
             else return reject({status: 'Failed', message: 'User not found'});
+
+        }).catch(function (err) {
+            console.log(err);
+            return reject({status: 'Failed', message: err});
+        });
+
+    });
+}
+
+function updateRating(driver_id, feedbackInfo){
+
+    return new Promise(function (resolve, reject) {
+
+        let driverSelectQuery = 'SELECT * FROM drivers WHERE driver_id = ' + driver_id + ';';
+
+        postgreSQLService.queryExecutor(driverSelectQuery).then(function (driverSelectQueryResponse) {
+
+            if(driverSelectQueryResponse.rowCount > 0){
+
+                let driverUpdateQuery = 'UPDATE drivers SET total_rating = \''
+                    + (driverSelectQueryResponse.rows[0].total_rating + feedbackInfo.driver_rating) + '\', total_raters = '
+                    + (driverSelectQueryResponse.rows[0].total_raters + 1) + ' WHERE driver_id = ' + driver_id + ' RETURNING *;';
+
+                console.log(driverUpdateQuery)
+
+                return postgreSQLService.queryExecutor(driverUpdateQuery)
+            }
+            else return reject({status: 'Failed', message: 'User not found'});
+
+        }).then(function (driverUpdateQueryResponse) {
+            if (!driverUpdateQueryResponse) return;
+
+            if(driverUpdateQueryResponse.rowCount > 0){
+
+                return resolve({status: 'Ok', data: driverUpdateQueryResponse.rows[0]});
+            }
+            else return reject({status: 'Failed', message: 'Failed to update user'});
 
         }).catch(function (err) {
             console.log(err);

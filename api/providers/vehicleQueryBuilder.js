@@ -84,6 +84,7 @@ function updateVehicleByVehicleId(driver_id, vehicle_id, vehicleInfo){
                 return reject({status: 'Failed', message: 'Vehicle is not related to driver id'});
             }
         }).then(function (vehicleUpdateQueryResponse) {
+            if (!vehicleUpdateQueryResponse) return;
 
             if(vehicleUpdateQueryResponse.rowCount > 0){
                 return resolve({status: 'Ok', data: vehicleUpdateQueryResponse.rows[0]});
@@ -118,6 +119,7 @@ function updateVehicleCurrentLocationByVehicleId(driver_id, vehicle_id, vehicleL
                 return reject({status: 'Failed', message: 'Vehicle is not related to driver id'});
             }
         }).then(function (vehicleUpdateQueryResponse) {
+            if (!vehicleUpdateQueryResponse) return;
 
             if(vehicleUpdateQueryResponse.rowCount > 0){
 
@@ -183,6 +185,7 @@ function updateVehicleAvailability(driverInfo, vehicleAvailability){
                 return reject({status: 'Failed', message: 'Vehicle is not related to driver id'});
             }
         }).then(function (vehicleUpdateQueryResponse) {
+            if (!vehicleUpdateQueryResponse) return;
 
             if(vehicleUpdateQueryResponse && vehicleUpdateQueryResponse.rowCount > 0){
                 return resolve({status: 'Ok', data: vehicleUpdateQueryResponse.rows[0]});

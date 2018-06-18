@@ -10,7 +10,8 @@ module.exports = {
     getOrderStatus: getOrderStatus,
     getOrders: getOrders,
     acceptOrder: acceptOrder,
-    completeOrder: completeOrder
+    completeOrder: completeOrder,
+    addFeedback: addFeedback
 };
 
 function insertOrder(orderInfo, userInfo){
@@ -92,6 +93,7 @@ function getOrders(order_id, userInfo) {
                 return reject({status: 'Failed', message: 'No order related to order id or customer id' });
             }
         }).then(function(response) {
+            if (!response) return;
 
             for(i = 0; i < returnResponse.length; i += 1){
                 for(j = 0; j < returnResponse[i].notified_drivers.length; j += 1){
@@ -141,15 +143,21 @@ function acceptOrder(order_id, driverInfo) {
                 return reject({status: 'Failed', message: 'Failed to insert vehicle'});
             }
         }).then(function (response) {
+            if (!response) return;
+
             driverQueryBuilderResponse = response;
             return vehicleQueryBuilder.updateVehicleAvailability(driverQueryBuilderResponse.data, 5);
         }).then(function (response) {
+            if (!response) return;
+
             let orderUpdateQuery = 'UPDATE orders SET order_acceptor_vehicle_id = ' + driverQueryBuilderResponse.data.current_vehicle + ', order_status = '
                 + 2 + ' WHERE order_id = ' + order_id + ' RETURNING *;';
 
             return postgreSQLService.queryExecutor(orderUpdateQuery);
 
         }).then(function (orderUpdateQueryResponse) {
+            if (!orderUpdateQueryResponse) return;
+
             if(orderUpdateQueryResponse.rowCount > 0){
                 return resolve({status: 'Ok', data: orderUpdateQueryResponse.rows[0]});
             }else{
@@ -185,20 +193,74 @@ function completeOrder(order_id, driverInfo) {
                 }
 
             }else{
-                return reject({status: 'Failed', message: 'Failed to insert vehicle'});
+                return reject({status: 'Failed', message: 'Failed to get the order'});
             }
         }).then(function (response) {
             if (!response) return;
             return vehicleQueryBuilder.updateVehicleAvailability(response.data, 4);
         }).then(function (response) {
+            if (!response) return;
+
             let orderUpdateQuery = 'UPDATE orders SET order_status = ' + 3 + ' WHERE order_id = ' + order_id + ' RETURNING *;';
             return postgreSQLService.queryExecutor(orderUpdateQuery);
         }).then(function (orderUpdateQueryResponse) {
+            if (!orderUpdateQueryResponse) return;
+
             if(orderUpdateQueryResponse.rowCount > 0){
                 return resolve({status: 'Ok', data: orderUpdateQueryResponse.rows[0]});
             }else{
                 return reject({status: 'Failed', message: 'Failed to accept order'});
             }
+
+        }).catch(function (err) {
+            console.log(err);
+            return reject({status: 'Failed', message: err});
+        });
+
+    });
+
+}
+
+function addFeedback(customer_id, feedbackInfo) {
+
+    return new Promise(function (resolve, reject) {
+
+        let orderSelectQuery = 'SELECT * FROM orders '
+            + 'JOIN statuses ON statuses.status_id = orders.order_status '
+            + 'JOIN vehicles ON vehicles.vehicle_id = orders.order_acceptor_vehicle_id '
+            + 'WHERE orders.order_id = ' + feedbackInfo.order_id + ' AND orders.customer_id = ' + customer_id
+            + ' AND statuses.status_id = ' + 3 + ';';
+
+        let driver_id;
+
+        postgreSQLService.queryExecutor(orderSelectQuery).then(function (response) {
+
+            if(response.rowCount > 0){
+                driver_id = response.rows[0].driver_id;
+                return response.rows[0];
+            }else{
+                return reject({status: 'Failed', message: 'The order should be completed to add feedback'});
+            }
+        }).then(function (response) {
+            if (!response) return;
+
+            let feedBackInsertQuery = 'INSERT INTO customer_feedbacks(order_id, customer_feedback, driver_rating) values(' + feedbackInfo.order_id
+                + ', \'' + feedbackInfo.customer_feedback  + '\', ' + feedbackInfo.driver_rating  + ') RETURNING *;';
+
+            return postgreSQLService.queryExecutor(feedBackInsertQuery);
+        }).then(function (response) {
+            if (!response) return;
+
+            if(response.rowCount > 0){
+                return driverQueryBuilder.updateRating(driver_id, feedbackInfo);
+            }else{
+                return reject({status: 'Failed', message: 'Failed to accept order'});
+            }
+
+        }).then(function (response) {
+            if (!response) return;
+
+            return resolve({status: 'Ok', data: 'Successfully added the rating'});
 
         }).catch(function (err) {
             console.log(err);

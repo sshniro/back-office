@@ -42,6 +42,7 @@ function insertUser(userInfo){
                 return reject({status: 'Failed', message: 'Failed to insert user'});
             }
         }).then(function(response) {
+            if (!response) return;
 
             if(userInfo.role.includes('Driver')) userInsertQueryResponse.rows[0].driver = response[0];
 
@@ -86,6 +87,8 @@ function getUserByUserId(user){
                 return reject({status: 'Failed', message: 'User not found'});
             }
         }).then(function(response) {
+
+            if (!response) return;
 
             if(userSelectQueryResponse.rows[0].role.includes('Driver'))
                 userSelectQueryResponse.rows[0].driver = response[0];
@@ -137,6 +140,7 @@ function updateUserByUserId(user, userInfo){
                 return reject({status: 'Failed', message: 'User not found'});
             }
         }).then(function (response) {
+            if (!response) return;
 
             userSelectQueryResponse = response;
             if(userSelectQueryResponse.rowCount > 0){
@@ -153,6 +157,7 @@ function updateUserByUserId(user, userInfo){
                 return reject({status: 'Failed', message: 'Failed to Update'});
             }
         }).then(function(response) {
+            if (!response) return;
 
             delete userSelectQueryResponse.rows[0].password;
 

@@ -17,6 +17,9 @@ const vehiclesRouter = require('./api/routes/vehicles');
 const ordersRouter = require('./api/routes/orders');
 const driversRouter = require('./api/routes/drivers');
 
+const postgreSQLService = require('./api/services/postgreSQLService');
+const geo_helper = require('./api/helpers/geo-helper');
+
 const googleMapsRouter = require('./api/routes/google-maps');
 
 const authenticationProvider = require('./api/providers/authenticationProvider.js');
@@ -82,7 +85,36 @@ function initDatabase(){
             console.log('error: ', err);
         }
         console.log('Database init Success;');
+
+        initRedis();
+
         client.end();
+    });
+}
+
+function initRedis(){
+
+    let driverSelectQuery = 'SELECT * FROM drivers JOIN vehicles ON vehicles.vehicle_id = drivers.current_vehicle;';
+
+    postgreSQLService.queryExecutor(driverSelectQuery).then(function (driverSelectQueryResponse) {
+
+        let i, redisJson = {};;
+        for(i = 0; i < driverSelectQueryResponse.rows.length; i += 1){
+            if(driverSelectQueryResponse.rows[i].availability === 4){
+
+                redisJson[driverSelectQueryResponse.rows[i].driver_id] = {
+                    latitude: driverSelectQueryResponse.rows[i].current_location_latitude,
+                    longitude: driverSelectQueryResponse.rows[i].current_location_longitude
+                };
+
+            }
+        }
+
+        geo_helper.addLocationsToRedis(redisJson).then(e => console.log('Successfully add/updated driver to redis.'));
+
+    }).catch(function (err) {
+        console.log(err);
+        return reject({status: 'Failed', message: err});
     });
 }
 
