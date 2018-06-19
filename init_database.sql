@@ -75,6 +75,7 @@ CREATE TABLE customer_feedbacks(
 CREATE TABLE notified_drivers(
     order_id INT NOT NULL REFERENCES orders(order_id),
     driver_id INT NOT NULL REFERENCES drivers(driver_id),
+    created_at TIMESTAMP DEFAULT now(),
     PRIMARY KEY(order_id, driver_id));
 
 /* Insert into Tables */

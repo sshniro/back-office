@@ -145,6 +145,9 @@ function notifyDrivers(orderInfo) {
 
         notifiedDriversQueryBuilder.insertNotifiedDriver(orderInfo.order_id, orderInfo.availableVehicles[0][0].key).then(function (response) {
 
+            // Uncomment to delete notified drivers after a period of time
+            // deleteNotifiedUsers(orderInfo.order_id);
+
             if(orderInfo.availableVehicles[0].length > 1){
                 orderInfo.availableVehicles[0].splice(0, 1);
             }else {
@@ -166,7 +169,7 @@ function notifyDriversByDistance(orderInfo) {
 
         orderQueryBuilder.getOrderStatus(orderInfo.order_id).then(function (response) {
 
-            if(response.data.order_status === 1){
+            if(response.data && response.data.order_status === 1){
                 let i, j, promiseArr = [];
 
                 for (i = 0; i < 1; i += 1) {
@@ -184,12 +187,57 @@ function notifyDriversByDistance(orderInfo) {
 
                 }
             }else{
-                console.log('Order Not Found');
+                console.log('Order already accepted by driver');
             }
 
         }).catch(function (err) {
             console.log(err);
         });
 
-    }, 10 * 1000);
+    }, baseConfig.driverNotificationInterval);
+}
+
+
+function deleteNotifiedUsers(order_id) {
+
+    setTimeout(function(){
+
+        let order_status = false;
+
+        orderQueryBuilder.getOrderStatus(order_id).then(function (response) {
+
+            if(response.data.order_status !== 1){
+                order_status = true;
+            }
+
+            return notifiedDriversQueryBuilder.getNotifiedDriversByOrderId(order_id);
+
+        }).then(function (response) {
+
+            if(!response.data){
+                response.data = [];
+            }
+
+            let i, promiseArr = [];
+
+            for (i = 0; i < response.data.length; i += 1) {
+
+                let date1 = new Date, date2 = new Date(response.data[i].created_at);
+
+                let date1_ms = date1.getTime(), date2_ms = date2.getTime();
+
+                if((date1_ms - date2_ms) > baseConfig.driverNotificationRemovalInterval){
+                    promiseArr.push(notifiedDriversQueryBuilder.deleteNotifiedDriverByOrderIdAndDriverId(response.data[i].order_id, response.data[i].driver_id))
+                }
+            }
+
+            return Promise.all(promiseArr);
+
+        }).then(function(response) {
+            if(order_status === false) deleteNotifiedUsers(order_id);
+        }).catch(function (err) {
+            console.log(err);
+        });
+
+    }, baseConfig.driverNotificationRemovalInterval);
 }

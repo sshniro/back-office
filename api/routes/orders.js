@@ -69,8 +69,6 @@ router.put('/complete', authenticationProvider.permit('Driver'), function(req, r
 
 router.post('/feedback', authenticationProvider.permit('Customer'), function(req, res, next){
 
-    // Update Order Feedback & Driver Rating
-
     let user = req.user, feedbackInfo = req.body || '';
 
     console.log(feedbackInfo);

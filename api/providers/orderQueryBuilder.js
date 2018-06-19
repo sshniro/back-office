@@ -99,6 +99,7 @@ function getOrders(order_id, userInfo) {
                 for(j = 0; j < returnResponse[i].notified_drivers.length; j += 1){
 
                     for(k = 0; k < response.length; k += 1){
+
                         if(response[k].data.user_id === returnResponse[i].notified_drivers[j]){
                             returnResponse[i].notified_drivers[j] = response[k].data;
                         }

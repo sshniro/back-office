@@ -10,10 +10,12 @@ module.exports = {
 
 function calculateDistance(json){
 
+	console.log(json)
+
 	let options = {
 		method: 'GET',
 		url: 'https://maps.googleapis.com/maps/api/distancematrix/json',
-		qs: { 
+		qs: {
 			units: 'imperial',
 			origins: json.origins,
 			destinations: json.destinations

@@ -2,7 +2,6 @@ $(document).ready(function() {
     functions.getAPIkey();
 });
 
-
 let functions = {
 
     getAPIkey: function () {
@@ -29,11 +28,6 @@ let functions = {
             $.ajax(loadScriptSettings).done(function () {
                 functions.mapInit();
 
-                functions.initFrom($('#orderId').val());
-
-                $('#orderId').change(function() {
-                    functions.initFrom($('#orderId').val());
-                });
             });
         });
 
@@ -46,6 +40,19 @@ let functions = {
             zoom: 11,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         });
+
+        directionsService = new google.maps.DirectionsService();
+        directionsDisplay = new google.maps.DirectionsRenderer();
+        directionsDisplay.setMap(map);
+
+        $('#foodStoreLatitudeAndLongitude').val('41 Sri Medhankara Rd, Dehiwala-Mount Lavinia, Sri Lanka');
+        functions.addMarker('Restaurant', 6.850740, 79.873541);
+        functions.addMarker('User',  6.794126, 79.908880);
+
+        $('#UserAddressLatitudeAndLongitude').val('Deniya Rd, Piliyandala, Sri Lanka');
+
+
+        functions.calculateDistance('6.850740,79.873541', '6.794126,79.908880');
         
     }, clearMarkers: function(){
         map.setZoom(11)
@@ -55,47 +62,14 @@ let functions = {
             }
             markersArray.length = 0;
         }
-    }, getUserCurrentAddress: function(latitude, longitude){
-
-        if (navigator.geolocation) {
-
-            navigator.geolocation.getCurrentPosition(function(position) {
-                /*
-                let pos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                */
-                setMarker();
-
-            }, function() {
-                setMarker();
-            });
-        } else {
-            setMarker();
-        }
-
-        function setMarker() {
-            let pos = {
-                lat: latitude,
-                lng: longitude
-            };
-
-            map.setCenter(new google.maps.LatLng(pos.lat, pos.lng));
-
-            functions.calculateDistance($('#foodStoreLatitudeAndLongitude').attr('dataFoodStoreLatitudeAndLongitude'), pos.lat + ',' + pos.lng);
-            functions.addMarker('User', pos.lat, pos.lng);
-        }
-
     }, addMarker: function(type, latitude, longitude){
 
         let markerobject = new google.maps.Marker({
             map: map,
             draggable: true,
-            position: new google.maps.LatLng(latitude, longitude)
+            position: new google.maps.LatLng(latitude, longitude),
+            label: labels[labelIndex++ % labels.length]
         });
-
-        markersArray.push(markerobject);
 
         if(type === 'Restaurant'){
 
@@ -106,7 +80,7 @@ let functions = {
         }else{
 
             google.maps.event.addListener(markerobject, 'dragend', function(args){
-                functions.calculateDistance($('#foodStoreLatitudeAndLongitude').attr('dataFoodStoreLatitudeAndLongitude'), args.latLng.lat() + ',' + args.latLng.lng())
+                functions.calculateDistance($('#foodStoreLatitudeAndLongitude').attr('dataFoodStoreLatitudeAndLongitude'), args.latLng.lat() + ',' + args.latLng.lng());
             });
 
         }
@@ -122,6 +96,13 @@ let functions = {
                 'cache-control': 'no-cache'
             }
         };
+        let originSplit = foodStoreLatitudeAndLongitude.split(','), destinationSplit = userAddressLatitudeAndLongitude.split(',');
+
+        request = {
+            origin: new google.maps.LatLng(originSplit[0], originSplit[1]),
+            destination: new google.maps.LatLng(destinationSplit[0], destinationSplit[1]),
+            travelMode: google.maps.TravelMode.DRIVING
+        };
 
         $.ajax(settings).done(function (response) {
 
@@ -132,31 +113,6 @@ let functions = {
             }
         });
 
-    }, initFrom: function(dropDownVal){
-
-        let settings = {
-            'async': true,
-            'crossDomain': true,
-            'url': window.location.origin + '/orders?orderId=' + dropDownVal,
-            'method': 'GET',
-            'headers': {
-                'cache-control': 'no-cache'
-            }
-        };
-
-        $.ajax(settings).done(function (response) {
-
-            functions.clearMarkers();
-
-            functions.setInputValuse(response);
-            let originSplit = response.origin.split(',');
-            let destinationSplit = response.destination.split(',');
-
-            functions.addMarker('Restaurant', originSplit[0], originSplit[1]);
-            functions.getUserCurrentAddress(destinationSplit[0], destinationSplit[1]);
-
-        });
-
     }, setInputValuse: function(response){
 
         $('#UserAddressLatitudeAndLongitude').attr('dataUserAddressLatitudeAndLongitude', response.destination);
@@ -165,77 +121,105 @@ let functions = {
         $('#foodStoreLatitudeAndLongitude').attr('dataFoodStoreLatitudeAndLongitude', response.origin);
         $('#foodStoreLatitudeAndLongitude').val(response.origin_address);
 
-        $('#distance').val(response.distance.text);
-        $('#basePrice').val(Math.round((response.distance.value / 1000) * 40).toFixed(2) + '/=');
+        let km = response.distance.value / 1000, baseprice = Math.round((response.distance.value / 1000) * 40);
+
+        $('#distance').val(km.toFixed(2) + ' Km');
+        $('#basePrice').val(baseprice.toFixed(2) + '/=');
         $('#duration').val(response.duration.text);
+
+        /*
+        directionsService.route(request, function (response, status) {
+            if (status === google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+            }
+        });
+        */
+
+    }, showDrivers: function () {
+
+        let orderJson = {
+            foodStoreLatitudeAndLongitude: $('#foodStoreLatitudeAndLongitude').attr('dataFoodStoreLatitudeAndLongitude'),
+            UserAddressLatitudeAndLongitude: $('#UserAddressLatitudeAndLongitude').attr('dataUserAddressLatitudeAndLongitude')
+        };
+
+        let settings = {
+            'async': true,
+            'crossDomain': true,
+            'url': window.location.origin + '/orders/available/vehicles?origin_latitude_longitude=' + orderJson.foodStoreLatitudeAndLongitude + '&destination_latitude_longitude=' + orderJson.foodStoreLatitudeAndLongitude + '&timestamp=1529222131192&payment_method=1',
+            'method': 'GET',
+            'headers': {
+                'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImN1c3RvbWVyMDEiLCJpYXQiOjE1MjkzMTYxMzAsImV4cCI6MTUyOTQwMjUzMH0.peHrJA-yJf5GrmXQ8LhkLYFiSo4ECKumoQpPvheRmG4',
+                'cache-control': 'no-cache'
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR: ');
+                console.log(jqXHR);
+                console.log('textStatus: ');
+                console.log(textStatus);
+                console.log('errorThrown: ');
+                console.log(errorThrown);
+            }
+        };
+
+        $.ajax(settings).done(function (response) {
+
+            functions.clearMarkers();
+
+            for(let i = 0; i < response.data.availableVehicles.length; i +=1) {
+
+                let markerobject = new google.maps.Marker({
+                    map: map,
+                    draggable: false,
+                    icon: window.location.origin + '/Food_app/assets/img/car.png',
+                    position: new google.maps.LatLng(response.data.availableVehicles[i].latitude, response.data.availableVehicles[i].longitude)
+                });
+
+                markersArray.push(markerobject);
+            }
+
+        });
 
     }, orderSubmit: function () {
 
         let orderJson = {
-            orderId: $('#orderId').val(),
-            foodStoreLatitudeAndLongitude: $('#foodStoreLatitudeAndLongitude').attr('dataFoodStoreLatitudeAndLongitude'),
-            UserAddressLatitudeAndLongitude: $('#UserAddressLatitudeAndLongitude').attr('dataUserAddressLatitudeAndLongitude')
+            origin_latitude_longitude: $('#foodStoreLatitudeAndLongitude').attr('dataFoodStoreLatitudeAndLongitude'),
+            destination_latitude_longitude: $('#UserAddressLatitudeAndLongitude').attr('dataUserAddressLatitudeAndLongitude'),
+            timestamp: Date.now(),
+            payment_method: 1
         };
-
-        $('#orderId').val(''); $('#foodStoreLatitudeAndLongitude').val(''); $('#UserAddressLatitudeAndLongitude').val('');
-        $('#distance').val(''); $('#basePrice').val(''); $('#duration').val('');
 
         let settings = {
             'async': true,
             'crossDomain': true,
-            'url': window.location.origin + '/drivers/available?orderId=' + orderJson.orderId + '&origin=' + orderJson.foodStoreLatitudeAndLongitude + '&destination=' + orderJson.UserAddressLatitudeAndLongitude,
+            'url': window.location.origin + '/orders/available/vehicles',
             'method': 'POST',
             'headers': {
+                'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImN1c3RvbWVyMDEiLCJpYXQiOjE1MjkzMTYxMzAsImV4cCI6MTUyOTQwMjUzMH0.peHrJA-yJf5GrmXQ8LhkLYFiSo4ECKumoQpPvheRmG4',
                 'cache-control': 'no-cache'
+            },
+            'data': orderJson,
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR: '); console.log(jqXHR);
+                console.log('textStatus: '); console.log(textStatus);
+                console.log('errorThrown: '); console.log(errorThrown);
+
+                $('#exampleModal').modal();
+                $('#exampleModalLabel').html('Error');
+                $('#exampleModalBody').html('Error, P]please try again later!!');
             }
         };
 
         $.ajax(settings).done(function (response) {
-            // console.log(response);
-            console.log('Successfully ordered');
+            $('#exampleModal').modal();
+            $('#exampleModalLabel').html('Success');
+            $('#exampleModalBody').html('Order has been successfully made!!');
         });
 
-    }, showDrivers: function () {
-        let orderJson = {
-            orderId: $('#orderId').val(),
-            foodStoreLatitudeAndLongitude: $('#foodStoreLatitudeAndLongitude').attr('dataFoodStoreLatitudeAndLongitude'),
-            UserAddressLatitudeAndLongitude: $('#UserAddressLatitudeAndLongitude').attr('dataUserAddressLatitudeAndLongitude')
-        };
-
-        let settings = {
-            'async': true,
-            'crossDomain': true,
-            'url': window.location.origin + '/drivers/available?orderId=' + orderJson.orderId + '&origin=' + orderJson.foodStoreLatitudeAndLongitude + '&destination=' + orderJson.UserAddressLatitudeAndLongitude,
-            'method': 'GET',
-            'headers': {
-                'cache-control': 'no-cache'
-            }
-        };
-
-        $.ajax(settings).done(function (response) {
-
-            let i, j;
-
-            for(i = 0; i < response.data.length; i +=1){
-
-                for(j = 0; j < response.data[i].length; j +=1){
-                    console.log()
-
-                    let markerobject = new google.maps.Marker({
-                        map: map,
-                        draggable: false,
-                        icon: window.location.origin + '/Food_app/assets/img/car.png',
-                        position: new google.maps.LatLng(response.data[i][j].latitude, response.data[i][j].longitude)
-                    });
-
-                    markersArray.push(markerobject);
-                }
-            }
-
-        });
     }
 
 };
 
 
-let map, markersArray = [];
+let map, markersArray = [], labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', labelIndex = 0, directionsService, directionsDisplay, request;
+
+
